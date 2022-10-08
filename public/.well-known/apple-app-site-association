@@ -1,0 +1,26 @@
+{
+	"applinks": {
+		"details": [
+			{
+				"appIDs": [
+					"ATCQ69339G.com.quae.quaeapp"
+				],
+				"components": [
+					{
+						"/": "/transaction/*",
+						"comment": "Matches any URL with a path that starts with /post/."
+					},
+					{
+						"/": "/contact/*",
+						"comment": "Matches any URL with a path that starts with /post/discussion/."
+					}
+				]
+			}
+		]
+	},
+	"webcredentials": {
+		"apps": [
+			"ATCQ69339G.com.quae.quaeapp"
+		]
+	}
+}

@@ -1,0 +1,12 @@
+[
+	{
+		"relation": ["delegate_permission/common.handle_all_urls"],
+		"target": {
+			"namespace": "android_app",
+			"package_name": "com.quae.quaeapp",
+			"sha256_cert_fingerprints": [
+				"F2:57:73:5D:A2:05:83:3C:B4:92:86:0C:87:7C:86:EF:86:46:7F:4D:1F:8B:EE:0E:60:2D:C3:3A:5D:86:FB:89"
+			]
+		}
+	}
+]
