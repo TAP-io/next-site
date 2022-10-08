@@ -130,47 +130,63 @@ export default function ContactPage() {
   }
 
   function history_builder(history) {
-    const boxStyleHover = {
-      width: "100%",
-      height: "80px",
-      padding: "0px 20px",
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-      gap: "20px",
-      border: "1px solid black",
-      cursor: "pointer",
-    };
     const boxStyle = {
       width: "100%",
       height: "80px",
       padding: "0px 20px",
       display: "flex",
       flexDirection: "row",
-      alignItems: "center",
-      gap: "20px",
-      cursor: "pointer",
+      alignItems: "spacebetween",
+      gap: "10px",
+      backgroundColor: "white",
+      border: "1px black solid",
+    };
+
+    const text = {
+      color: history.amount >= 0 ? "green" : "red",
+      textAlign: "right",
     };
 
     return (
-      <div key={history.wallet}>
-        <img
-          style={{ width: "50px", height: "50px", borderRadius: "50%" }}
-          src={
-            "https://images.unsplash.com/photo-1593483316242-efb5420596ca?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8b3JhbmdlJTIwY2F0fGVufDB8fDB8fA%3D%3D&w=1000&q=80"
-          }
-        />
-
+      <div key={history.wallet} style={boxStyle}>
         <div
           style={{
-            direction: "flex",
-            flexDirection: "column",
-            gap: "0px",
-            lineHeight: "5px",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            width: "100%",
+
+            justifyContent: "space-between",
           }}
         >
-          <p style={{ fontSize: "20px" }}>{history.wallet}</p>
-          <p style={{ fontSize: "14px" }}>{history.wallet}</p>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
+            <img
+              style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+              src={
+                "https://images.unsplash.com/photo-1593483316242-efb5420596ca?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8b3JhbmdlJTIwY2F0fGVufDB8fDB8fA%3D%3D&w=1000&q=80"
+              }
+            />
+
+            <p style={{ fontSize: "20px" }}>Bryan Kyritz</p>
+          </div>
+        </div>
+        <div
+          style={{
+            width: "150px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "right",
+          }}
+        >
+          <p style={text}>
+            {history.amount} {history.token}
+          </p>
         </div>
       </div>
     );
