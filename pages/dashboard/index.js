@@ -4,16 +4,29 @@ import React, { useEffect, useState } from "react";
 import styles from "../../styles/Home.module.css";
 
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuItemOption,
+  MenuGroup,
+  MenuOptionGroup,
+  MenuDivider,
   Button,
-  Portal,
+  Input,
+  useDisclosure,
+} from "@chakra-ui/react";
+
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogCloseButton,
+  AlertDialogOverlay,
 } from "@chakra-ui/react";
 
 let init_contacts = [
@@ -118,8 +131,7 @@ export default function ContactPage() {
           style={{
             direction: "flex",
             flexDirection: "column",
-            gap: "0px",
-            lineHeight: "5px",
+            gap: "10px",
           }}
         >
           <p style={{ fontSize: "20px" }}>{contact.name}</p>
@@ -192,44 +204,195 @@ export default function ContactPage() {
     );
   }
 
-  function ModalAddContact() {
-    return (
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalContent
-          backgroundColor={"white"}
-          style={{
-            position: "absolute",
-            top: "25vw",
-            left: "50%",
-            marginTop: "-50px",
-            marginLeft: "-50px",
-            width: "100px",
-            height: "100px",
-            border: "2px solid black",
-          }}
-        >
-          <ModalHeader>Add New Contact</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <p>Hello</p>
-          </ModalBody>
+  function AddNewContact() {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const cancelRef = React.useRef();
+    const [name, setName] = useState("");
+    const [address, setAddress] = useState("");
 
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant="ghost">Secondary Action</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+    function save() {
+      onClose();
+    }
+
+    return (
+      <>
+        <button
+          style={{
+            padding: "15px",
+            backgroundColor: "#A6D49F",
+            fontSize: "20px",
+            display: "block",
+            border: "0px none",
+            cursor: "pointer",
+            outline: "none",
+            color: "black",
+            borderRadius: "5px",
+          }}
+          onClick={onOpen}
+        >
+          +
+        </button>
+        <AlertDialog
+          motionPreset="slideInBottom"
+          leastDestructiveRef={cancelRef}
+          onClose={onClose}
+          isOpen={isOpen}
+          isCentered
+        >
+          <AlertDialogOverlay />
+
+          <AlertDialogContent>
+            <AlertDialogHeader>Add New Contact</AlertDialogHeader>
+            <AlertDialogCloseButton />
+            <AlertDialogBody>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  flexDirection: "column",
+                }}
+              >
+                <Input
+                  placeholder="Name"
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
+                />
+                <Input
+                  placeholder="Address"
+                  onChange={(e) => {
+                    setAddress(e.target.value);
+                  }}
+                />
+              </div>
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <button
+                style={{
+                  padding: "15px",
+                  backgroundColor: "#A6D49F",
+                  fontSize: "14px",
+                  display: "block",
+                  border: "0px none",
+                  cursor: "pointer",
+                  outline: "none",
+                  color: "black",
+                  borderRadius: "5px",
+                }}
+                onClick={save}
+              >
+                Save
+              </button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </>
+    );
+  }
+
+  function Pay() {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const cancelRef = React.useRef();
+    const [amount, setAmount] = useState("");
+    const [token, setToken] = useState("");
+
+    function save() {
+      onClose();
+    }
+
+    return (
+      <>
+        <button
+          style={{
+            padding: "15px",
+            backgroundColor: "#A6D49F",
+            fontSize: "20px",
+            display: "block",
+            border: "0px none",
+            cursor: "pointer",
+            outline: "none",
+            color: "black",
+            borderRadius: "5px",
+          }}
+          onClick={onOpen}
+        >
+          Pay
+        </button>
+        <AlertDialog
+          motionPreset="slideInBottom"
+          leastDestructiveRef={cancelRef}
+          onClose={onClose}
+          isOpen={isOpen}
+          isCentered
+        >
+          <AlertDialogOverlay />
+
+          <AlertDialogContent>
+            <AlertDialogHeader>Pay Bryan Kyritz</AlertDialogHeader>
+            <AlertDialogCloseButton />
+            <AlertDialogBody>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  flexDirection: "row",
+                }}
+              >
+                <Input
+                  placeholder="0"
+                  onChange={(e) => {
+                    setAmount(e.target.value);
+                  }}
+                />
+
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    rightIcon={
+                      <ExpandMoreIcon style={{ marginLeft: "20px" }} />
+                    }
+                  >
+                    {token ? token : "Select"}
+                    {"    "}
+                  </MenuButton>
+                  <MenuList>
+                    <MenuItem
+                      onClick={(e) => {
+                        setToken("USDG");
+                      }}
+                    >
+                      USDG
+                    </MenuItem>
+                  </MenuList>
+                </Menu>
+              </div>
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <button
+                style={{
+                  padding: "15px",
+                  backgroundColor: "#A6D49F",
+                  fontSize: "14px",
+                  display: "block",
+                  border: "0px none",
+                  cursor: "pointer",
+                  outline: "none",
+                  color: "black",
+                  borderRadius: "5px",
+                }}
+                onClick={save}
+              >
+                Pay
+              </button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </>
     );
   }
 
   return (
     <>
-      <div>
-        <ModalAddContact />
-      </div>
       <div className={styles.container}>
         <Head>
           <title>Contacts</title>
@@ -290,7 +453,7 @@ export default function ContactPage() {
             display: "flex",
             flexDirection: "row",
             gap: "20px",
-            padding: "30px 50px",
+            padding: "30px 0px",
           }}
         >
           <div className="Left" style={{ width: "50%" }}>
@@ -312,22 +475,7 @@ export default function ContactPage() {
                   Your Contacts
                 </h2>
                 <div>
-                  <button
-                    style={{
-                      padding: "15px",
-                      backgroundColor: "#A6D49F",
-                      fontSize: "20px",
-                      display: "block",
-                      border: "0px none",
-                      cursor: "pointer",
-                      outline: "none",
-                      color: "black",
-                      borderRadius: "5px",
-                    }}
-                    onClick={onOpen}
-                  >
-                    +
-                  </button>
+                  <AddNewContact />
                 </div>
               </div>
 
@@ -378,27 +526,16 @@ export default function ContactPage() {
                     gap: "10px",
                   }}
                 >
-                  <h1 style={{ color: "white", lineHeight: "0px" }}>
+                  <h1
+                    style={{
+                      color: "white",
+
+                      fontSize: "40px",
+                    }}
+                  >
                     Bryan Kyritz
                   </h1>
-                  <button
-                    block
-                    style={{
-                      width: "100%",
-                      padding: "10px 25px",
-                      backgroundColor: "#A6D49F",
-                      fontSize: "20px",
-                      display: "block",
-                      border: "0 none",
-                      cursor: "pointer",
-                      outline: "none",
-                      borderRadius: "5px",
-                      color: "black",
-                    }}
-                    onClick={() => router.push("/dashboard")}
-                  >
-                    Pay
-                  </button>
+                  <Pay />
                 </div>
               </div>
               <h2
@@ -406,6 +543,7 @@ export default function ContactPage() {
                   fontSize: "20px",
                   color: "white",
                   textAlign: "center",
+                  marginBottom: "10px",
                 }}
               >
                 Transaction History
