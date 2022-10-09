@@ -19,7 +19,7 @@ export default function Home() {
         walletconnect: {
           package: WalletConnectProvider,
           options: {
-            infuraId: "85dd1f2ff5714888b2ad407c14147db5",
+            infuraId: process.env.INFURA_KEY,
           },
         },
       },
