@@ -3,16 +3,16 @@
 		"details": [
 			{
 				"appIDs": [
-					"ATCQ69339G.com.quae.quaeapp"
+					"ATCQ69339G.com.tap.tapio"
 				],
 				"components": [
 					{
 						"/": "/transaction/*",
-						"comment": "Matches any URL with a path that starts with /post/."
+						"comment": "Matches any URL with a path that starts with /transaction/."
 					},
 					{
 						"/": "/contact/*",
-						"comment": "Matches any URL with a path that starts with /post/discussion/."
+						"comment": "Matches any URL with a path that starts with /contact/."
 					}
 				]
 			}
@@ -20,7 +20,7 @@
 	},
 	"webcredentials": {
 		"apps": [
-			"ATCQ69339G.com.quae.quaeapp"
+			"ATCQ69339G.com.tap.tapio"
 		]
 	}
 }
