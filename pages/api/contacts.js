@@ -47,6 +47,5 @@ export async function getAllContacts() {
 
   let res = await ContactList.getAllContacts();
 
-  console.log(res);
-  console.log("all contact");
+  return res;
 }

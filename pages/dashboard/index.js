@@ -2,6 +2,8 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import styles from "../../styles/Home.module.css";
+import Image from "next/image";
+import makeBlockie from "ethereum-blockies-base64";
 
 import * as Contacts from "../api/contacts";
 
@@ -32,21 +34,6 @@ import {
   AlertDialogOverlay,
 } from "@chakra-ui/react";
 
-let init_contacts = [
-  {
-    wallet: "0x9d812c4776b1602d89adbc1f493a74879c038ce5",
-    name: "Bryan Kyritz",
-  },
-  {
-    wallet: "0x1232136b1602d89adbc1f493a74879c038ce5",
-    name: "Hello World",
-  },
-  {
-    wallet: "0x9d1231231236b1602d89adbc1f493a74879c038ce5",
-    name: "Marcos ",
-  },
-];
-
 let init_history = [
   {
     amount: 100,
@@ -67,6 +54,7 @@ export default function ContactPage() {
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [clickedAddress, setClickedAddress] = useState("");
+  const [clickedUser, setClickedUser] = useState(null);
   const [tokens, setTokens] = useState([]);
   const [nfts, setNFTs] = useState([]);
   const router = useRouter();
@@ -78,15 +66,28 @@ export default function ContactPage() {
   useEffect(() => {
     let add = window.localStorage.getItem("address");
     setAddress(add);
-    setContacts(init_contacts);
+
     setHistory(init_history);
     getWalletAssets(add);
     getTransactions();
-    test();
+    getContacts();
   }, []);
 
-  async function test() {
-    // await Contacts.createList();
+  async function getContacts() {
+    let a = await Contacts.getAllContacts();
+    console.log("got contacts");
+
+    let obj = {
+      wallet: a[0],
+      name: "Marcos", // fetch name & picture
+      picture: null,
+    };
+    setContacts([obj]);
+  }
+
+  async function getHistoryBetween(other) {
+    let me = window.localStorage.getItem("address");
+    let a = API.getTransactionsBetween(me, other);
   }
 
   async function getTransactions(add) {
@@ -135,12 +136,15 @@ export default function ContactPage() {
     const handleMouseLeave = (wallet) => {
       setIsHover(wallet);
     };
-    const handleClick = (wallet) => {
-      if (wallet == clickedAddress) {
+    const handleClick = (user) => {
+      if (user.wallet == clickedAddress) {
         setClickedAddress("");
+        setClickedUser(null);
       } else {
-        setClickedAddress(wallet);
+        setClickedAddress(user.wallet);
+        setClickedUser(user);
       }
+      getHistoryBetween(user.wallet);
     };
 
     return (
@@ -153,13 +157,23 @@ export default function ContactPage() {
         }
         onMouseEnter={() => handleMouseEnter(contact.wallet)}
         onMouseLeave={() => handleMouseLeave("")}
-        onClick={() => handleClick(contact.wallet)}
+        onClick={() => handleClick(contact)}
       >
-        <img
+        {/* <img
           style={{ width: "50px", height: "50px", borderRadius: "50%" }}
           src={
             "https://images.unsplash.com/photo-1593483316242-efb5420596ca?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8b3JhbmdlJTIwY2F0fGVufDB8fDB8fA%3D%3D&w=1000&q=80"
           }
+        /> */}
+
+        <Image
+          name={"Profile"}
+          src={contact.picture ? contact.picture : makeBlockie(contact.wallet)}
+          className="avatar"
+          width="50px"
+          height="50px"
+          alt="Profile Pic"
+          style={{ width: "50px", height: "50px", borderRadius: "50%" }}
         />
 
         <div
@@ -202,7 +216,6 @@ export default function ContactPage() {
             alignItems: "center",
             gap: "10px",
             width: "100%",
-
             justifyContent: "space-between",
           }}
         >
@@ -213,12 +226,12 @@ export default function ContactPage() {
               gap: "10px",
             }}
           >
-            <img
-              style={{ width: "50px", height: "50px", borderRadius: "50%" }}
-              src={
-                "https://images.unsplash.com/photo-1593483316242-efb5420596ca?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8b3JhbmdlJTIwY2F0fGVufDB8fDB8fA%3D%3D&w=1000&q=80"
-              }
-            />
+            {/* <img
+							style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+							src={
+								"https://images.unsplash.com/photo-1593483316242-efb5420596ca?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8b3JhbmdlJTIwY2F0fGVufDB8fDB8fA%3D%3D&w=1000&q=80"
+							}
+						/> */}
 
             <p style={{ fontSize: "20px" }}>Bryan Kyritz</p>
           </div>
@@ -306,12 +319,6 @@ export default function ContactPage() {
                     setAddress(e.target.value);
                   }}
                 />
-                <Input
-                  placeholder="Phone Number"
-                  onChange={(e) => {
-                    setPhone(e.target.value);
-                  }}
-                />
               </div>
             </AlertDialogBody>
             <AlertDialogFooter>
@@ -378,7 +385,7 @@ export default function ContactPage() {
           <AlertDialogOverlay />
 
           <AlertDialogContent>
-            <AlertDialogHeader>Pay Bryan Kyritz</AlertDialogHeader>
+            <AlertDialogHeader>Pay {clickedUser.name}</AlertDialogHeader>
             <AlertDialogCloseButton />
             <AlertDialogBody>
               <div
@@ -469,7 +476,7 @@ export default function ContactPage() {
                   color: "black",
                   borderRadius: "5px",
                 }}
-                onClick={pay}
+                // onClick={pay}
               >
                 Pay
               </button>
@@ -598,15 +605,33 @@ export default function ContactPage() {
                     alignItems: "center",
                   }}
                 >
-                  <img
+                  {/* <img
+										style={{
+											width: "150px",
+											height: "150px",
+											borderRadius: "50%",
+										}}
+										src={
+											"https://images.unsplash.com/photo-1593483316242-efb5420596ca?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8b3JhbmdlJTIwY2F0fGVufDB8fDB8fA%3D%3D&w=1000&q=80"
+										}
+									/> */}
+
+                  <Image
+                    name={"Profile"}
+                    src={
+                      clickedUser.picture
+                        ? clickedUser.picture
+                        : makeBlockie(clickedUser.wallet)
+                    }
+                    className="avatar"
+                    width="150px"
+                    height="150px"
+                    alt="Profile Pic"
                     style={{
-                      width: "150px",
-                      height: "150px",
+                      width: "50px",
+                      height: "50px",
                       borderRadius: "50%",
                     }}
-                    src={
-                      "https://images.unsplash.com/photo-1593483316242-efb5420596ca?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8b3JhbmdlJTIwY2F0fGVufDB8fDB8fA%3D%3D&w=1000&q=80"
-                    }
                   />
 
                   <div
@@ -623,8 +648,15 @@ export default function ContactPage() {
                         fontSize: "40px",
                       }}
                     >
-                      Bryan Kyritz
+                      {clickedUser.name}
                     </h1>
+                    <h1
+                      style={{
+                        color: "white",
+
+                        fontSize: "40px",
+                      }}
+                    ></h1>
                     <Pay />
                   </div>
                 </div>
@@ -659,8 +691,6 @@ export default function ContactPage() {
                 >
                   My Assets
                 </h1>
-
-                <button onClick={Contacts.getAllContacts()}>Click me</button>
 
                 <div
                   style={{

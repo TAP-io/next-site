@@ -58,9 +58,10 @@ export async function getAllTransactionsTo(to) {
   return transactions;
 }
 
-export async function getAllTransactionsFrom(from) {
+export async function getAllTransactionsFrom(to, from) {
   // Get all outbound transfers for a provided address
   const transactions = await alchemy.core.getAssetTransfers({
+    toAddress: to,
     fromAddress: from,
     excludeZeroValue: true,
     category: ["erc721", "erc20"],
@@ -75,6 +76,14 @@ export async function getAllTransactionsFrom(from) {
     res.push(parsed);
   }
   return res;
+}
+
+export function getTransactionsBetween(me, other) {
+  let a = getAllTransactionsFrom(me, other);
+  let b = getAllTransactionsFrom(other, me);
+
+  console.log(a);
+  console.log(b);
 }
 
 async function parseTransaction(tran) {
