@@ -34,19 +34,6 @@ import {
   AlertDialogOverlay,
 } from "@chakra-ui/react";
 
-let init_history = [
-  {
-    amount: 100,
-    token: "USDG",
-    wallet: "0x9d812c4776b1602d89adbc1f493a74879c038ce5",
-  },
-  {
-    amount: -100,
-    token: "USDG",
-    wallet: "0x9d812c4776b1602d89adbc1f493a74879c038ce5",
-  },
-];
-
 export default function ContactPage() {
   const [loading, setLoading] = useState(true);
   const [contacts, setContacts] = useState([]);
@@ -66,19 +53,17 @@ export default function ContactPage() {
   useEffect(() => {
     let add = window.localStorage.getItem("address");
     setAddress(add);
-
-    setHistory(init_history);
     getWalletAssets(add);
     getTransactions();
     getContacts();
   }, []);
 
   async function getContacts() {
-    let a = await Contacts.getAllContacts();
+    //let a = await Contacts.getAllContacts();
     console.log("got contacts");
 
     let obj = {
-      wallet: a[0],
+      wallet: "0x5E7Ce9F588F2aa647E0518e25A9c88AB48Ec6834", // a[0],
       name: "Marcos", // fetch name & picture
       picture: null,
     };
@@ -88,6 +73,9 @@ export default function ContactPage() {
   async function getHistoryBetween(other) {
     let me = window.localStorage.getItem("address");
     let a = await API.getTransactionsBetween(me, other);
+
+    console.log("hist:", a);
+    setHistory(a);
   }
 
   async function getTransactions(add) {
@@ -159,13 +147,6 @@ export default function ContactPage() {
         onMouseLeave={() => handleMouseLeave("")}
         onClick={() => handleClick(contact)}
       >
-        {/* <img
-          style={{ width: "50px", height: "50px", borderRadius: "50%" }}
-          src={
-            "https://images.unsplash.com/photo-1593483316242-efb5420596ca?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8b3JhbmdlJTIwY2F0fGVufDB8fDB8fA%3D%3D&w=1000&q=80"
-          }
-        /> */}
-
         <Image
           name={"Profile"}
           src={contact.picture ? contact.picture : makeBlockie(contact.wallet)}
@@ -197,7 +178,7 @@ export default function ContactPage() {
       padding: "0px 20px",
       display: "flex",
       flexDirection: "row",
-      alignItems: "spacebetween",
+      alignItems: "space-between",
       gap: "10px",
       backgroundColor: "white",
       border: "1px black solid",
@@ -226,14 +207,19 @@ export default function ContactPage() {
               gap: "10px",
             }}
           >
-            {/* <img
-							style={{ width: "50px", height: "50px", borderRadius: "50%" }}
-							src={
-								"https://images.unsplash.com/photo-1593483316242-efb5420596ca?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8b3JhbmdlJTIwY2F0fGVufDB8fDB8fA%3D%3D&w=1000&q=80"
-							}
-						/> */}
-
-            <p style={{ fontSize: "20px" }}>Bryan Kyritz</p>
+            <Image
+              src={
+                history.logo
+                  ? history.logo
+                  : "https://cdn-icons-png.flaticon.com/512/4412/4412363.png"
+              }
+              width={25}
+              height={25}
+              style={{
+                marginRight: "10px",
+                borderRadius: "50%",
+              }}
+            />
           </div>
         </div>
         <div
@@ -245,7 +231,7 @@ export default function ContactPage() {
           }}
         >
           <p style={text}>
-            {history.amount} {history.token}
+            {history.amount.toFixed(2)} {history.symbol}
           </p>
         </div>
       </div>
@@ -317,6 +303,12 @@ export default function ContactPage() {
                   placeholder="Address"
                   onChange={(e) => {
                     setAddress(e.target.value);
+                  }}
+                />
+                <Input
+                  placeholder="Phone"
+                  onChange={(e) => {
+                    setPhone(e.target.value);
                   }}
                 />
               </div>
@@ -416,15 +408,15 @@ export default function ContactPage() {
                       }}
                     >
                       {token && (
-                        <img
+                        <Image
                           src={
                             token.metadata.logo
                               ? token.metadata.logo
                               : "https://cdn-icons-png.flaticon.com/512/4412/4412363.png"
                           }
+                          width={15}
+                          height={15}
                           style={{
-                            width: "15px",
-                            height: "15px",
                             marginRight: "10px",
                             borderRadius: "50%",
                           }}
@@ -440,15 +432,15 @@ export default function ContactPage() {
                           setToken(tok);
                         }}
                       >
-                        <img
+                        <Image
                           src={
                             tok.metadata.logo
                               ? tok.metadata.logo
                               : "https://cdn-icons-png.flaticon.com/512/4412/4412363.png"
                           }
+                          width={15}
+                          height={15}
                           style={{
-                            width: "15px",
-                            height: "15px",
                             marginRight: "10px",
                             borderRadius: "50%",
                           }}
@@ -605,17 +597,6 @@ export default function ContactPage() {
                     alignItems: "center",
                   }}
                 >
-                  {/* <img
-										style={{
-											width: "150px",
-											height: "150px",
-											borderRadius: "50%",
-										}}
-										src={
-											"https://images.unsplash.com/photo-1593483316242-efb5420596ca?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8b3JhbmdlJTIwY2F0fGVufDB8fDB8fA%3D%3D&w=1000&q=80"
-										}
-									/> */}
-
                   <Image
                     name={"Profile"}
                     src={
@@ -724,15 +705,15 @@ export default function ContactPage() {
                           alignItems: "center",
                         }}
                       >
-                        <img
+                        <Image
                           src={
                             tok.metadata.logo
                               ? tok.metadata.logo
                               : "https://cdn-icons-png.flaticon.com/512/4412/4412363.png"
                           }
+                          width={25}
+                          height={25}
                           style={{
-                            width: "25px",
-                            height: "25px",
                             marginRight: "10px",
                             borderRadius: "50%",
                           }}
@@ -772,9 +753,10 @@ export default function ContactPage() {
                   {nfts.map((nft) => {
                     return (
                       <div>
-                        <img
+                        <Image
+                          width={200}
+                          height={200}
                           src={nft.media[0].raw}
-                          style={{ width: "200px" }}
                         />
                       </div>
                     );

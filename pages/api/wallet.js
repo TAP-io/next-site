@@ -1,6 +1,6 @@
 import { Network, Alchemy } from "alchemy-sdk";
 import { utils } from "ethers";
-//  network: Network.MATIC_MUMBAI,
+
 /*
 const settings = {
   apiKey: "Pee6TJj3LzA6gBceh0FDxHTJi5H9cSE0",
@@ -48,36 +48,34 @@ export async function getAllNfts(address) {
 }
 
 export async function getAllTransactionsFrom(to, from) {
-  // Get all outbound transfers for a provided address
-
   const transactions = await alchemy.core.getAssetTransfers({
     toAddress: to,
     fromAddress: from,
-    excludeZeroValue: true,
     category: ["erc721", "erc20"],
     order: "desc",
   });
 
-  console.log();
-
   let res = [];
 
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < transactions.transfers.length; i++) {
     let tran = transactions.transfers[i];
     let parsed = await parseTransaction(tran);
-    console.log(parsed);
     res.push(parsed);
   }
   return res;
 }
 
 export async function getTransactionsBetween(me, other) {
-  console.log("getting transactions");
   let a = await getAllTransactionsFrom(me, other);
   let b = await getAllTransactionsFrom(other, me);
 
-  console.log(a);
-  console.log(b);
+  for (let i = 0; i < b.length; i++) {
+    b[i].amount = -1 * b[i].amount;
+  }
+
+  const merged = [...a, ...b];
+
+  return merged;
 }
 
 async function parseTransaction(tran) {
@@ -94,6 +92,7 @@ async function parseTransaction(tran) {
       to: tran.to,
       from: tran.from,
     };
+
     return log;
   } else if (tran.category == "erc721") {
     // let metaData = await alchemy.nft.getNftMetadata(tran.);
