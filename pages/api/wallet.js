@@ -58,6 +58,8 @@ export async function getAllTransactionsFrom(to, from) {
     order: "desc",
   });
 
+  console.log();
+
   let res = [];
 
   for (let i = 0; i < 100; i++) {
