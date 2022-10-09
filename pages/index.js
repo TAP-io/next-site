@@ -6,6 +6,8 @@ import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useRouter } from "next/router";
 
+import * as contacts from "./api/contacts";
+
 export default function Home() {
   const [account, setAccount] = useState(null);
   const router = useRouter();
@@ -30,6 +32,7 @@ export default function Home() {
       const web3Modal = await getWeb3Modal();
       const connection = await web3Modal.connect();
       const provider = new ethers.providers.Web3Provider(connection);
+      contacts.setProvider(provider);
       const accounts = await provider.listAccounts();
       window.localStorage.setItem("address", accounts[0]);
       setAccount(accounts[0]);

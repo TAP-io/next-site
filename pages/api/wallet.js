@@ -47,6 +47,70 @@ export async function getAllNfts(address) {
   return nfts.ownedNfts;
 }
 
+export async function getAllTransactionsTo(to) {
+  // Get all outbound transfers for a provided address
+  const transactions = await alchemy.core.getAssetTransfers({
+    toAddress: to,
+    excludeZeroValue: true,
+    category: ["erc721", "erc20"],
+    order: "desc",
+  });
+  return transactions;
+}
+
+export async function getAllTransactionsFrom(from) {
+  // Get all outbound transfers for a provided address
+  const transactions = await alchemy.core.getAssetTransfers({
+    fromAddress: from,
+    excludeZeroValue: true,
+    category: ["erc721", "erc20"],
+    order: "desc",
+  });
+
+  let res = [];
+
+  for (let i = 0; i < 100; i++) {
+    let tran = transactions.transfers[i];
+    let parsed = await parseTransaction(tran);
+    res.push(parsed);
+  }
+  return res;
+}
+
+async function parseTransaction(tran) {
+  if (tran.category == "erc20") {
+    let metaData = await alchemy.core.getTokenMetadata(
+      tran.rawContract.address
+    );
+
+    let log = {
+      logo: metaData.logo,
+      category: "erc20",
+      symbol: tran.asset,
+      amount: tran.value,
+      to: tran.to,
+      from: tran.from,
+    };
+    return log;
+  } else if (tran.category == "erc721") {
+    // let metaData = await alchemy.nft.getNftMetadata(tran.);
+
+    // console.log(metaData);
+    let log = {
+      asset: tran.asset,
+      category: "erc721",
+
+      tokenId: tran.tokenId,
+      to: tran.to,
+      from: tran.from,
+    };
+
+    console.log("-------");
+    console.log(tran);
+    //
+  }
+}
+
 export async function sendErc20(address) {
   //sends erc-20 token
 }

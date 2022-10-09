@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import styles from "../../styles/Home.module.css";
 
+import * as Contacts from "../api/contacts";
+
 import * as API from "../api/wallet";
 import {
   Menu,
@@ -63,6 +65,7 @@ export default function ContactPage() {
   const [contacts, setContacts] = useState([]);
   const [history, setHistory] = useState([]);
   const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
   const [clickedAddress, setClickedAddress] = useState("");
   const [tokens, setTokens] = useState([]);
   const [nfts, setNFTs] = useState([]);
@@ -78,7 +81,17 @@ export default function ContactPage() {
     setContacts(init_contacts);
     setHistory(init_history);
     getWalletAssets(add);
+    getTransactions();
+    test();
   }, []);
+
+  async function test() {
+    // await Contacts.createList();
+  }
+
+  async function getTransactions(add) {
+    // console.log(await API.getAllTransactionsFrom(add));
+  }
 
   async function getWalletAssets(add) {
     //get tokens held
@@ -86,8 +99,8 @@ export default function ContactPage() {
     let nfts = await API.getAllNfts(add);
     setTokens(tokens);
     setNFTs(nfts);
-    console.log(tokens);
-    console.log(nfts);
+    // console.log(tokens);
+    //console.log(nfts);
     setLoading(false);
   }
 
@@ -232,7 +245,12 @@ export default function ContactPage() {
     const [name, setName] = useState("");
     const [address, setAddress] = useState("");
 
-    function save() {
+    async function save() {
+      await Contacts.addContact(
+        "https://bafkreicjjk7miomqpg7nuztyk7mezrqfhopxegefrh24i2aeftjejjbngy.ipfs.nftstorage.link/",
+        "0xf4f164f8cb9b8a3f9a6e4d550cbf2ee5051ebe17",
+        "6462269334"
+      );
       onClose();
     }
 
@@ -288,6 +306,12 @@ export default function ContactPage() {
                     setAddress(e.target.value);
                   }}
                 />
+                <Input
+                  placeholder="Phone Number"
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                  }}
+                />
               </div>
             </AlertDialogBody>
             <AlertDialogFooter>
@@ -320,7 +344,9 @@ export default function ContactPage() {
     const [amount, setAmount] = useState("");
     const [token, setToken] = useState("");
 
-    function save() {
+    async function pay() {
+      console.log("pay...");
+
       onClose();
     }
 
@@ -443,7 +469,7 @@ export default function ContactPage() {
                   color: "black",
                   borderRadius: "5px",
                 }}
-                onClick={save}
+                onClick={pay}
               >
                 Pay
               </button>
@@ -633,6 +659,8 @@ export default function ContactPage() {
                 >
                   My Assets
                 </h1>
+
+                <button onClick={Contacts.getAllContacts()}>Click me</button>
 
                 <div
                   style={{
