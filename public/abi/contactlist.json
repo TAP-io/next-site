@@ -113,9 +113,9 @@
 	{
 		"inputs": [
 			{
-				"internalType": "string",
-				"name": "_phoneNumber",
-				"type": "string"
+				"internalType": "address",
+				"name": "_contact",
+				"type": "address"
 			}
 		],
 		"name": "getContactInfo",

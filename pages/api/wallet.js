@@ -112,11 +112,3 @@ async function parseTransaction(tran) {
     //
   }
 }
-
-export async function sendErc20(address) {
-  //sends erc-20 token
-}
-
-export async function sendNft(address) {
-  //sends NFT
-}

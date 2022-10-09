@@ -42,6 +42,7 @@ export default function ContactPage() {
   const [clickedAddress, setClickedAddress] = useState("");
   const [clickedUser, setClickedUser] = useState(null);
   const [tokens, setTokens] = useState([]);
+  const [hasList, setHasList] = useState(false);
   const [nfts, setNFTs] = useState([]);
   const router = useRouter();
 
@@ -50,23 +51,29 @@ export default function ContactPage() {
   const [isHover, setIsHover] = useState("");
 
   useEffect(() => {
-    let add = window.localStorage.getItem("address");
-    setAddress(add);
-    getWalletAssets(add);
-    getTransactions();
-    getContacts();
+    init();
   }, []);
 
+  async function init() {
+    let add = window.localStorage.getItem("address");
+
+    let a = await Contacts.hasList();
+    setAddress(add);
+    getWalletAssets(add);
+    if (a) {
+      getContacts();
+      getTransactions();
+      console.log("has a list");
+      setHasList(true);
+    } else {
+      console.log("doesnt have a list");
+      setHasList(false);
+    }
+  }
   async function getContacts() {
     let a = await Contacts.getAllContacts();
-    console.log("got contacts");
-    console.log(a);
 
-    let obj = {
-      wallet: "0x5E7Ce9F588F2aa647E0518e25A9c88AB48Ec6834", // a[0],
-      name: "Marcos", // fetch name & picture
-      picture: null,
-    };
+    console.log(a);
     setContacts(a);
   }
 
@@ -86,6 +93,7 @@ export default function ContactPage() {
     //get tokens held
     let tokens = await API.getTokenBalances(add);
     let nfts = await API.getAllNfts(add);
+
     setTokens(tokens);
     setNFTs(nfts);
     // console.log(tokens);
@@ -343,6 +351,13 @@ export default function ContactPage() {
 
     async function pay() {
       console.log("pay...");
+      console.log(token);
+      Contacts.send_token(
+        token.address,
+        amount,
+        clickedUser.wallet,
+        token.metadata.decimals
+      );
 
       onClose();
     }
@@ -466,9 +481,93 @@ export default function ContactPage() {
                   color: "black",
                   borderRadius: "5px",
                 }}
-                // onClick={pay}
+                onClick={pay}
               >
                 Pay
+              </button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </>
+    );
+  }
+
+  function NewList() {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const cancelRef = React.useRef();
+    const [phone, setPhone] = useState("");
+
+    async function create() {
+      await Contacts.createList(phone);
+
+      onClose();
+    }
+
+    return (
+      <>
+        {!hasList && (
+          <button
+            style={{
+              padding: "15px",
+              backgroundColor: "#A6D49F",
+              fontSize: "20px",
+              display: "block",
+              border: "0px none",
+              cursor: "pointer",
+              outline: "none",
+              color: "black",
+              borderRadius: "5px",
+            }}
+            onClick={onOpen}
+          >
+            Create List
+          </button>
+        )}
+
+        <AlertDialog
+          motionPreset="slideInBottom"
+          leastDestructiveRef={cancelRef}
+          onClose={onClose}
+          isOpen={isOpen}
+          isCentered
+        >
+          <AlertDialogOverlay />
+
+          <AlertDialogContent>
+            <AlertDialogHeader>Create New List</AlertDialogHeader>
+            <AlertDialogCloseButton />
+            <AlertDialogBody>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  flexDirection: "row",
+                }}
+              >
+                <Input
+                  placeholder="0"
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                  }}
+                />
+              </div>
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <button
+                style={{
+                  padding: "15px",
+                  backgroundColor: "#A6D49F",
+                  fontSize: "14px",
+                  display: "block",
+                  border: "0px none",
+                  cursor: "pointer",
+                  outline: "none",
+                  color: "black",
+                  borderRadius: "5px",
+                }}
+                onClick={create}
+              >
+                Create
               </button>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -558,8 +657,13 @@ export default function ContactPage() {
                 }}
               >
                 <h2 style={{ fontSize: "60px", textDecoration: "underline" }}>
-                  Your Contacts
+                  My Contacts
                 </h2>
+
+                <div>
+                  <NewList />
+                </div>
+
                 <div>
                   <AddNewContact />
                 </div>
