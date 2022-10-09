@@ -87,7 +87,7 @@ export default function ContactPage() {
 
   async function getHistoryBetween(other) {
     let me = window.localStorage.getItem("address");
-    let a = API.getTransactionsBetween(me, other);
+    let a = await API.getTransactionsBetween(me, other);
   }
 
   async function getTransactions(add) {
@@ -190,7 +190,7 @@ export default function ContactPage() {
     );
   }
 
-  function history_builder(history) {
+  function history_builder(history, i) {
     const boxStyle = {
       width: "100%",
       height: "80px",
@@ -209,7 +209,7 @@ export default function ContactPage() {
     };
 
     return (
-      <div key={history.wallet} style={boxStyle}>
+      <div key={i} style={boxStyle}>
         <div
           style={{
             display: "flex",
@@ -671,7 +671,9 @@ export default function ContactPage() {
                   Transaction History
                 </h2>
 
-                {history.map((transaction) => history_builder(transaction))}
+                {history.map((transaction, i) =>
+                  history_builder(transaction, i)
+                )}
               </div>
             ) : (
               <div

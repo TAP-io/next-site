@@ -47,19 +47,9 @@ export async function getAllNfts(address) {
   return nfts.ownedNfts;
 }
 
-export async function getAllTransactionsTo(to) {
-  // Get all outbound transfers for a provided address
-  const transactions = await alchemy.core.getAssetTransfers({
-    toAddress: to,
-    excludeZeroValue: true,
-    category: ["erc721", "erc20"],
-    order: "desc",
-  });
-  return transactions;
-}
-
 export async function getAllTransactionsFrom(to, from) {
   // Get all outbound transfers for a provided address
+
   const transactions = await alchemy.core.getAssetTransfers({
     toAddress: to,
     fromAddress: from,
@@ -73,14 +63,16 @@ export async function getAllTransactionsFrom(to, from) {
   for (let i = 0; i < 100; i++) {
     let tran = transactions.transfers[i];
     let parsed = await parseTransaction(tran);
+    console.log(parsed);
     res.push(parsed);
   }
   return res;
 }
 
-export function getTransactionsBetween(me, other) {
-  let a = getAllTransactionsFrom(me, other);
-  let b = getAllTransactionsFrom(other, me);
+export async function getTransactionsBetween(me, other) {
+  console.log("getting transactions");
+  let a = await getAllTransactionsFrom(me, other);
+  let b = await getAllTransactionsFrom(other, me);
 
   console.log(a);
   console.log(b);
