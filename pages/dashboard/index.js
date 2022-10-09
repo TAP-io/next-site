@@ -39,7 +39,6 @@ export default function ContactPage() {
   const [contacts, setContacts] = useState([]);
   const [history, setHistory] = useState([]);
   const [address, setAddress] = useState("");
-  const [phone, setPhone] = useState("");
   const [clickedAddress, setClickedAddress] = useState("");
   const [clickedUser, setClickedUser] = useState(null);
   const [tokens, setTokens] = useState([]);
@@ -59,15 +58,16 @@ export default function ContactPage() {
   }, []);
 
   async function getContacts() {
-    //let a = await Contacts.getAllContacts();
+    let a = await Contacts.getAllContacts();
     console.log("got contacts");
+    console.log(a);
 
     let obj = {
       wallet: "0x5E7Ce9F588F2aa647E0518e25A9c88AB48Ec6834", // a[0],
       name: "Marcos", // fetch name & picture
       picture: null,
     };
-    setContacts([obj]);
+    setContacts(a);
   }
 
   async function getHistoryBetween(other) {
@@ -243,13 +243,11 @@ export default function ContactPage() {
     const cancelRef = React.useRef();
     const [name, setName] = useState("");
     const [address, setAddress] = useState("");
+    const [phone, setPhone] = useState("");
 
     async function save() {
-      await Contacts.addContact(
-        "https://bafkreicjjk7miomqpg7nuztyk7mezrqfhopxegefrh24i2aeftjejjbngy.ipfs.nftstorage.link/",
-        "0xf4f164f8cb9b8a3f9a6e4d550cbf2ee5051ebe17",
-        "6462269334"
-      );
+      await Contacts.addContact(name, address, phone);
+
       onClose();
     }
 
