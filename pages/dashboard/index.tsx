@@ -10,29 +10,29 @@ import * as Contacts from "../api/contacts";
 
 import * as API from "../api/wallet";
 import {
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuItemOption,
-  MenuGroup,
-  MenuOptionGroup,
-  MenuDivider,
-  Button,
-  Input,
-  useDisclosure,
+	Menu,
+	MenuButton,
+	MenuList,
+	MenuItem,
+	MenuItemOption,
+	MenuGroup,
+	MenuOptionGroup,
+	MenuDivider,
+	Button,
+	Input,
+	useDisclosure,
 } from "@chakra-ui/react";
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogContent,
-  AlertDialogCloseButton,
-  AlertDialogOverlay,
+	AlertDialog,
+	AlertDialogBody,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogContent,
+	AlertDialogCloseButton,
+	AlertDialogOverlay,
 } from "@chakra-ui/react";
 import { WidgetProps } from "@worldcoin/id";
 const WorldIDWidget =
