@@ -10,6 +10,9 @@
 		"lint": "next lint",
 		"export": "next export"
 	},
+	"cacheDirectories": [
+		".next/cache"
+	],
 	"dependencies": {
 		"@chakra-ui/react": "^2.3.5",
 		"@emotion/react": "^11.10.4",
