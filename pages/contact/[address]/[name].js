@@ -1,20 +1,23 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
-
-export default function ContactPage() {
+export async function getServerSideProps({ params }) {
+	return {
+		props: { address: params.address, name: params.name },
+	};
+}
+export default function ContactPage(props) {
 	const router = useRouter();
-	const { address, name } = router.query;
 	return (
 		<div>
 			<Head>
-				<title>{name}</title>
+				<title>Add me on Tap! @{props.name}</title>
 				<meta name='description' content='Add this contact to your address' />
-				<link rel='icon' href='/favicon.ico' />
+				<link rel='icon' href='/circle-icon.png' />
 			</Head>
 			<h1>Contact</h1>
-			<p>Address:{address}</p>
-			<p>Name:{name}</p>
+			<p>Address:{props.address}</p>
+			<p>Name:{props.name}</p>
 		</div>
 	);
 }

@@ -9,162 +9,162 @@ import { useRouter } from "next/router";
 import * as contacts from "./api/contacts";
 
 export default function Home() {
-  const [account, setAccount] = useState(null);
-  const router = useRouter();
+	const [account, setAccount] = useState(null);
+	const router = useRouter();
 
-  async function getWeb3Modal() {
-    const web3Modal = new Web3Modal({
-      cacheProvider: false,
-      providerOptions: {
-        walletconnect: {
-          package: WalletConnectProvider,
-          options: {
-            infuraId: process.env.INFURA_KEY,
-          },
-        },
-      },
-    });
-    return web3Modal;
-  }
+	async function getWeb3Modal() {
+		const web3Modal = new Web3Modal({
+			cacheProvider: false,
+			providerOptions: {
+				walletconnect: {
+					package: WalletConnectProvider,
+					options: {
+						infuraId: process.env.INFURA_KEY,
+					},
+				},
+			},
+		});
+		return web3Modal;
+	}
 
-  async function connect() {
-    try {
-      const web3Modal = await getWeb3Modal();
-      const connection = await web3Modal.connect();
-      const provider = new ethers.providers.Web3Provider(connection);
-      contacts.setProvider(provider);
-      const accounts = await provider.listAccounts();
-      window.localStorage.setItem("address", accounts[0]);
-      setAccount(accounts[0]);
-    } catch (err) {
-      console.log("error:", err);
-    }
-  }
+	async function connect() {
+		try {
+			const web3Modal = await getWeb3Modal();
+			const connection = await web3Modal.connect();
+			const provider = new ethers.providers.Web3Provider(connection);
+			contacts.setProvider(provider);
+			const accounts = await provider.listAccounts();
+			window.localStorage.setItem("address", accounts[0]);
+			setAccount(accounts[0]);
+		} catch (err) {
+			console.log("error:", err);
+		}
+	}
 
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Contacts</title>
-        <meta
-          name="description"
-          content="Add and store contacts to your eth address."
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+	return (
+		<div className={styles.container}>
+			<Head>
+				<title>Tap Me</title>
+				<meta
+					name='description'
+					content='Add and store contacts to your eth address.'
+				/>
+				<link rel='icon' href='/circle-icon.png' />
+			</Head>
 
-      <div
-        style={{
-          width: "100%",
+			<div
+				style={{
+					width: "100%",
 
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div>
-          <h2
-            style={{ fontSize: "30px", cursor: "pointer" }}
-            onClick={() => router.push("/")}
-          >
-            Tap
-          </h2>
-        </div>
-        <div>
-          {!account && (
-            <div>
-              <button
-                style={{
-                  padding: "10px 25px",
-                  backgroundColor: "#A6D49F",
-                  fontSize: "20px",
-                  display: "block",
-                  border: "0 none",
-                  cursor: "pointer",
-                  outline: "none",
-                  borderRadius: "5px",
-                }}
-                onClick={connect}
-              >
-                Connect wallet
-              </button>
-            </div>
-          )}
-          {account && (
-            <div>
-              <button
-                style={{
-                  padding: "10px 25px",
-                  backgroundColor: "#A6D49F",
-                  fontSize: "20px",
-                  display: "block",
-                  border: "0 none",
-                  cursor: "pointer",
-                  outline: "none",
-                  borderRadius: "5px",
-                }}
-                onClick={() => router.push("/dashboard")}
-              >
-                Dashboard
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
+					display: "flex",
+					justifyContent: "space-between",
+					alignItems: "center",
+				}}
+			>
+				<div>
+					<h2
+						style={{ fontSize: "30px", cursor: "pointer" }}
+						onClick={() => router.push("/")}
+					>
+						Tap
+					</h2>
+				</div>
+				<div>
+					{!account && (
+						<div>
+							<button
+								style={{
+									padding: "10px 25px",
+									backgroundColor: "#A6D49F",
+									fontSize: "20px",
+									display: "block",
+									border: "0 none",
+									cursor: "pointer",
+									outline: "none",
+									borderRadius: "5px",
+								}}
+								onClick={connect}
+							>
+								Connect wallet
+							</button>
+						</div>
+					)}
+					{account && (
+						<div>
+							<button
+								style={{
+									padding: "10px 25px",
+									backgroundColor: "#A6D49F",
+									fontSize: "20px",
+									display: "block",
+									border: "0 none",
+									cursor: "pointer",
+									outline: "none",
+									borderRadius: "5px",
+								}}
+								onClick={() => router.push("/dashboard")}
+							>
+								Dashboard
+							</button>
+						</div>
+					)}
+				</div>
+			</div>
 
-      <div
-        style={{
-          width: "100%",
-          height: "80vh",
-          display: "flex",
-        }}
-      >
-        <div
-          style={{
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            gap: "30px",
-          }}
-        >
-          <h1 style={{ fontSize: "7rem", lineHeight: "7rem" }}>
-            Build your Crosschain Contact List
-          </h1>
-          <div style={{ display: "flex", gap: "20px" }}>
-            <button
-              style={{
-                padding: "10px 25px",
-                backgroundColor: "#A6D49F",
-                fontSize: "20px",
-                display: "block",
-                border: "0 none",
-                cursor: "pointer",
-                outline: "none",
-                borderRadius: "5px",
-              }}
-            >
-              App Store
-            </button>
-            <button
-              style={{
-                padding: "10px 25px",
-                backgroundColor: "#A6D49F",
-                fontSize: "20px",
-                display: "block",
-                border: "0 none",
-                cursor: "pointer",
-                outline: "none",
-                borderRadius: "5px",
-              }}
-            >
-              Play Store
-            </button>
-          </div>
-        </div>
-        <div style={{ width: "100%", height: "100%" }}></div>
-      </div>
+			<div
+				style={{
+					width: "100%",
+					height: "80vh",
+					display: "flex",
+				}}
+			>
+				<div
+					style={{
+						height: "100%",
+						display: "flex",
+						flexDirection: "column",
+						justifyContent: "center",
+						gap: "30px",
+					}}
+				>
+					<h1 style={{ fontSize: "7rem", lineHeight: "7rem" }}>
+						Build your Crosschain Contact List
+					</h1>
+					<div style={{ display: "flex", gap: "20px" }}>
+						<button
+							style={{
+								padding: "10px 25px",
+								backgroundColor: "#A6D49F",
+								fontSize: "20px",
+								display: "block",
+								border: "0 none",
+								cursor: "pointer",
+								outline: "none",
+								borderRadius: "5px",
+							}}
+						>
+							App Store
+						</button>
+						<button
+							style={{
+								padding: "10px 25px",
+								backgroundColor: "#A6D49F",
+								fontSize: "20px",
+								display: "block",
+								border: "0 none",
+								cursor: "pointer",
+								outline: "none",
+								borderRadius: "5px",
+							}}
+						>
+							Play Store
+						</button>
+					</div>
+				</div>
+				<div style={{ width: "100%", height: "100%" }}></div>
+			</div>
 
-      <footer className={styles.footer}>Share with friends!</footer>
-    </div>
-  );
+			<footer className={styles.footer}>Share with friends!</footer>
+		</div>
+	);
 }
