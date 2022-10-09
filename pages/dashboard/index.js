@@ -403,6 +403,7 @@ export default function ContactPage() {
 									<MenuList>
 										{tokens.map((tok, i) => (
 											<MenuItem
+												key={i}
 												onClick={(e) => {
 													setToken(tok);
 												}}
@@ -648,6 +649,7 @@ export default function ContactPage() {
 								>
 									{tokens.map((tok, i) => (
 										<div
+											key={i}
 											style={{
 												display: "flex",
 												width: "100%",
@@ -709,9 +711,9 @@ export default function ContactPage() {
 										justifyContent: "center",
 									}}
 								>
-									{nfts.map((nft) => {
+									{nfts.map((nft, i) => {
 										return (
-											<div>
+											<div key={i}>
 												{/* <img
 													src={nft.media[0].raw}
 													style={{ width: "200px" }}
