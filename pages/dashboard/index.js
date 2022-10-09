@@ -101,7 +101,7 @@ export default function ContactPage() {
     setLoading(false);
   }
 
-  function contact_builder(contact) {
+  function contact_builder(contact, i) {
     const boxStyleHover = {
       width: "100%",
       height: "80px",
@@ -145,7 +145,7 @@ export default function ContactPage() {
 
     return (
       <div
-        key={contact.wallet}
+        key={i}
         style={
           isHover == contact.wallet || contact.wallet == clickedAddress
             ? boxStyleHover
@@ -223,6 +223,7 @@ export default function ContactPage() {
               }
               width={25}
               height={25}
+              alt="Profile Pic"
               style={{
                 marginRight: "10px",
                 borderRadius: "50%",
@@ -429,6 +430,7 @@ export default function ContactPage() {
                           }
                           width={15}
                           height={15}
+                          alt="Profile Pic"
                           style={{
                             marginRight: "10px",
                             borderRadius: "50%",
@@ -441,6 +443,7 @@ export default function ContactPage() {
                   <MenuList>
                     {tokens.map((tok, i) => (
                       <MenuItem
+                        key={i}
                         onClick={(e) => {
                           setToken(tok);
                         }}
@@ -453,6 +456,7 @@ export default function ContactPage() {
                           }
                           width={15}
                           height={15}
+                          alt="Profile Pic"
                           style={{
                             marginRight: "10px",
                             borderRadius: "50%",
@@ -669,7 +673,7 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {contacts.map((contact) => contact_builder(contact))}
+              {contacts.map((contact, i) => contact_builder(contact, i))}
             </div>
           </div>
           <div
@@ -791,6 +795,7 @@ export default function ContactPage() {
                 >
                   {tokens.map((tok, i) => (
                     <div
+                      key={i}
                       style={{
                         display: "flex",
                         width: "100%",
@@ -814,6 +819,7 @@ export default function ContactPage() {
                               : "https://cdn-icons-png.flaticon.com/512/4412/4412363.png"
                           }
                           width={25}
+                          alt="Profile Pic"
                           height={25}
                           style={{
                             marginRight: "10px",
@@ -852,10 +858,11 @@ export default function ContactPage() {
                     justifyContent: "center",
                   }}
                 >
-                  {nfts.map((nft) => {
+                  {nfts.map((nft, i) => {
                     return (
-                      <div>
+                      <div key={i}>
                         <Image
+                          alt="Profile Pic"
                           width={200}
                           height={200}
                           src={nft.media[0].raw}
