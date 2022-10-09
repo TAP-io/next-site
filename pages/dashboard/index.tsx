@@ -880,7 +880,7 @@ export default function ContactPage() {
         <WorldIDWidget
 							signal={address}
 							actionId="wid_67cc5cce351405cd8daa6d5f11d9e3b0"
-              onSuccess={(proof) => console.log(proof)}
+              onSuccess={(proof) => setProof(proof)}
               onError={(error) => console.error(error)}
                 />
     
