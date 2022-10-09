@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import styles from "../../styles/Home.module.css";
+import dynamic from 'next/dynamic'
 import Image from "next/image";
 import makeBlockie from "ethereum-blockies-base64";
 
@@ -33,6 +34,9 @@ import {
   AlertDialogCloseButton,
   AlertDialogOverlay,
 } from "@chakra-ui/react";
+import { WidgetProps } from "@worldcoin/id";
+const WorldIDWidget =
+  dynamic < WidgetProps > (() => import("@worldcoin/id").then((mod) => mod.WorldIDWidget), { ssr: false });
 
 export default function ContactPage() {
   const [loading, setLoading] = useState(true);
@@ -44,7 +48,9 @@ export default function ContactPage() {
   const [tokens, setTokens] = useState([]);
   const [hasList, setHasList] = useState(false);
   const [nfts, setNFTs] = useState([]);
+  const [proof, setProof] = useState(null)
   const router = useRouter();
+
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -56,6 +62,7 @@ export default function ContactPage() {
 
   async function init() {
     let add = window.localStorage.getItem("address");
+
 
     let a = await Contacts.hasList();
     setAddress(add);
@@ -869,7 +876,14 @@ export default function ContactPage() {
           </div>
         </div>
 
-        <footer className={styles.footer}>Share with friends!</footer>
+        
+        <WorldIDWidget
+							signal={address}
+							actionId="wid_67cc5cce351405cd8daa6d5f11d9e3b0"
+              onSuccess={(proof) => console.log(proof)}
+              onError={(error) => console.error(error)}
+                />
+    
       </div>
     </>
   );

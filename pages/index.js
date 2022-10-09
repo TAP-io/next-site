@@ -8,8 +8,10 @@ import { useRouter } from "next/router";
 
 import * as contacts from "./api/contacts";
 
+
+
 export default function Home() {
-  const [account, setAccount] = useState(null);
+  const [account, setAccount] = useState("");
   const router = useRouter();
 
   async function getWeb3Modal() {
@@ -164,7 +166,6 @@ export default function Home() {
         <div style={{ width: "100%", height: "100%" }}></div>
       </div>
 
-      <footer className={styles.footer}>Share with friends!</footer>
     </div>
   );
 }
