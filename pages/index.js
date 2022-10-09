@@ -111,14 +111,21 @@ export default function Home() {
       <div
         style={{
           width: "100%",
-          height: "90vh",
-
+          height: "80vh",
           display: "flex",
         }}
       >
-        <div>
-          <h1 style={{ fontSize: "7rem" }}>
-            Build your crosschain contact list
+        <div
+          style={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            gap: "30px",
+          }}
+        >
+          <h1 style={{ fontSize: "7rem", lineHeight: "7rem" }}>
+            Build your Crosschain Contact List
           </h1>
           <div style={{ display: "flex", gap: "20px" }}>
             <button
@@ -133,7 +140,21 @@ export default function Home() {
                 borderRadius: "5px",
               }}
             >
-              App store
+              App Store
+            </button>
+            <button
+              style={{
+                padding: "10px 25px",
+                backgroundColor: "#A6D49F",
+                fontSize: "20px",
+                display: "block",
+                border: "0 none",
+                cursor: "pointer",
+                outline: "none",
+                borderRadius: "5px",
+              }}
+            >
+              Play Store
             </button>
           </div>
         </div>

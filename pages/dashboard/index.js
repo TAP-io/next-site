@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import styles from "../../styles/Home.module.css";
 
+import * as API from "../api/wallet";
 import {
   Menu,
   MenuButton,
@@ -58,20 +59,37 @@ let init_history = [
 ];
 
 export default function ContactPage() {
+  const [loading, setLoading] = useState(true);
   const [contacts, setContacts] = useState([]);
   const [history, setHistory] = useState([]);
   const [address, setAddress] = useState("");
   const [clickedAddress, setClickedAddress] = useState("");
+  const [tokens, setTokens] = useState([]);
+  const [nfts, setNFTs] = useState([]);
   const router = useRouter();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [isHover, setIsHover] = useState("");
 
   useEffect(() => {
-    setAddress(window.localStorage.getItem("address"));
+    let add = window.localStorage.getItem("address");
+    setAddress(add);
     setContacts(init_contacts);
     setHistory(init_history);
+    getWalletAssets(add);
   }, []);
+
+  async function getWalletAssets(add) {
+    //get tokens held
+    let tokens = await API.getTokenBalances(add);
+    let nfts = await API.getAllNfts(add);
+    setTokens(tokens);
+    setNFTs(nfts);
+    console.log(tokens);
+    console.log(nfts);
+    setLoading(false);
+  }
 
   function contact_builder(contact) {
     const boxStyleHover = {
@@ -105,7 +123,11 @@ export default function ContactPage() {
       setIsHover(wallet);
     };
     const handleClick = (wallet) => {
-      setClickedAddress(wallet);
+      if (wallet == clickedAddress) {
+        setClickedAddress("");
+      } else {
+        setClickedAddress(wallet);
+      }
     };
 
     return (
@@ -218,7 +240,9 @@ export default function ContactPage() {
       <>
         <button
           style={{
-            padding: "15px",
+            padding: "20px",
+            height: "80px",
+            width: "80px",
             backgroundColor: "#A6D49F",
             fontSize: "20px",
             display: "block",
@@ -348,23 +372,62 @@ export default function ContactPage() {
                 <Menu>
                   <MenuButton
                     as={Button}
-                    rightIcon={
-                      <ExpandMoreIcon style={{ marginLeft: "20px" }} />
-                    }
+                    rightIcon={<ExpandMoreIcon />}
+                    style={{ padding: "0px 20px", minWidth: "200px" }}
                   >
-                    {token ? token : "Select"}
-                    {"    "}
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem
-                      onClick={(e) => {
-                        setToken("USDG");
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        flexDirection: "row",
                       }}
                     >
-                      USDG
-                    </MenuItem>
+                      {token && (
+                        <img
+                          src={
+                            token.metadata.logo
+                              ? token.metadata.logo
+                              : "https://cdn-icons-png.flaticon.com/512/4412/4412363.png"
+                          }
+                          style={{
+                            width: "15px",
+                            height: "15px",
+                            marginRight: "10px",
+                            borderRadius: "50%",
+                          }}
+                        />
+                      )}
+                      {token ? token.metadata.symbol : "Select"}
+                    </div>
+                  </MenuButton>
+                  <MenuList>
+                    {tokens.map((tok, i) => (
+                      <MenuItem
+                        onClick={(e) => {
+                          setToken(tok);
+                        }}
+                      >
+                        <img
+                          src={
+                            tok.metadata.logo
+                              ? tok.metadata.logo
+                              : "https://cdn-icons-png.flaticon.com/512/4412/4412363.png"
+                          }
+                          style={{
+                            width: "15px",
+                            height: "15px",
+                            marginRight: "10px",
+                            borderRadius: "50%",
+                          }}
+                        />
+                        {tok.metadata.symbol}
+                      </MenuItem>
+                    ))}
                   </MenuList>
                 </Menu>
+              </div>
+              <div style={{ marginTop: "10px" }}>
+                {token && <p>Max: {Number(token.balance).toFixed(2)}</p>}
               </div>
             </AlertDialogBody>
             <AlertDialogFooter>
@@ -491,66 +554,174 @@ export default function ContactPage() {
               padding: "10px 50px",
             }}
           >
-            <div
-              style={{
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                marginTop: "20px",
-              }}
-            >
+            {clickedAddress && clickedAddress.length > 0 ? (
               <div
                 style={{
+                  width: "100%",
                   display: "flex",
-                  flexDirection: "row",
-                  padding: "0px 30px",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  flexDirection: "column",
+                  marginTop: "20px",
                 }}
               >
-                <img
+                <div
                   style={{
-                    width: "150px",
-                    height: "150px",
-                    borderRadius: "50%",
+                    display: "flex",
+                    flexDirection: "row",
+                    padding: "0px 30px",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                   }}
-                  src={
-                    "https://images.unsplash.com/photo-1593483316242-efb5420596ca?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8b3JhbmdlJTIwY2F0fGVufDB8fDB8fA%3D%3D&w=1000&q=80"
-                  }
-                />
+                >
+                  <img
+                    style={{
+                      width: "150px",
+                      height: "150px",
+                      borderRadius: "50%",
+                    }}
+                    src={
+                      "https://images.unsplash.com/photo-1593483316242-efb5420596ca?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8b3JhbmdlJTIwY2F0fGVufDB8fDB8fA%3D%3D&w=1000&q=80"
+                    }
+                  />
+
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "10px",
+                    }}
+                  >
+                    <h1
+                      style={{
+                        color: "white",
+
+                        fontSize: "40px",
+                      }}
+                    >
+                      Bryan Kyritz
+                    </h1>
+                    <Pay />
+                  </div>
+                </div>
+                <h2
+                  style={{
+                    fontSize: "20px",
+                    color: "white",
+                    textAlign: "center",
+                    marginBottom: "10px",
+                  }}
+                >
+                  Transaction History
+                </h2>
+
+                {history.map((transaction) => history_builder(transaction))}
+              </div>
+            ) : (
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  marginTop: "20px",
+                }}
+              >
+                <h1
+                  style={{
+                    color: "white",
+                    fontSize: "40px",
+                    textAlign: "center",
+                  }}
+                >
+                  My Assets
+                </h1>
 
                 <div
                   style={{
                     display: "flex",
-                    flexDirection: "column",
+                    flexDirection: "row",
+                    height: "100%",
+                    width: "100%",
                     gap: "10px",
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  <h1
-                    style={{
-                      color: "white",
-
-                      fontSize: "40px",
-                    }}
-                  >
-                    Bryan Kyritz
-                  </h1>
-                  <Pay />
+                  {tokens.map((tok, i) => (
+                    <div
+                      style={{
+                        display: "flex",
+                        width: "100%",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          width: "100%",
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        <img
+                          src={
+                            tok.metadata.logo
+                              ? tok.metadata.logo
+                              : "https://cdn-icons-png.flaticon.com/512/4412/4412363.png"
+                          }
+                          style={{
+                            width: "25px",
+                            height: "25px",
+                            marginRight: "10px",
+                            borderRadius: "50%",
+                          }}
+                        />
+                        <p style={{ fontSize: "20px", color: "white" }}>
+                          {tok.metadata.symbol}
+                        </p>
+                      </div>
+                      <p style={{ fontSize: "20px", color: "white" }}>
+                        {tok.balance.toFixed(2)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                <h1
+                  style={{
+                    color: "white",
+                    fontSize: "40px",
+                    textAlign: "center",
+                    marginTop: "20px",
+                  }}
+                >
+                  My NFTs
+                </h1>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    height: "100%",
+                    width: "100%",
+                    gap: "10px",
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {nfts.map((nft) => {
+                    return (
+                      <div>
+                        <img
+                          src={nft.media[0].raw}
+                          style={{ width: "200px" }}
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
-              <h2
-                style={{
-                  fontSize: "20px",
-                  color: "white",
-                  textAlign: "center",
-                  marginBottom: "10px",
-                }}
-              >
-                Transaction History
-              </h2>
-
-              {history.map((transaction) => history_builder(transaction))}
-            </div>
+            )}
           </div>
         </div>
 
